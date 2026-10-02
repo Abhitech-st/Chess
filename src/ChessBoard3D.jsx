@@ -24,7 +24,7 @@ export function ChessBoard3D({
 
   // Convert (row, col) to 3D world position (X, Y, Z)
   const get3DPos = (row, col) => {
-    return [(col - 3.5) * 1.1, 0, (row - 3.5) * 1.1];
+    return [(col - 3.5) * 1.05, 0, (row - 3.5) * 1.05];
   };
 
   // Convert square name (e.g. 'e2') to 3D position
@@ -39,31 +39,32 @@ export function ChessBoard3D({
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <Canvas
-        camera={{ position: [0, 9.2, 4.8], fov: 42 }}
+        camera={{ position: [0, 8.2, 3.6], fov: 38 }}
         shadows
         gl={{ antialias: true }}
       >
-        {/* Ambient & Space Lighting */}
-        <ambientLight intensity={0.7} />
+        {/* Crisp Ambient & Rim Lighting */}
+        <ambientLight intensity={0.9} />
         <directionalLight
           position={[5, 12, 5]}
-          intensity={1.3}
+          intensity={1.5}
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
         />
-        <pointLight position={[-6, 6, -6]} intensity={1.2} color="#7c5bf5" />
-        <pointLight position={[6, 6, 6]} intensity={1.2} color="#00d4ff" />
+        <pointLight position={[-6, 6, -6]} intensity={1.4} color="#7c5bf5" />
+        <pointLight position={[6, 6, 6]} intensity={1.4} color="#00d4ff" />
+        <pointLight position={[0, -2, 0]} intensity={0.6} color="#ffffff" />
 
         {/* Space Starfield background */}
-        <Stars radius={50} depth={50} count={2000} factor={3} saturation={0} fade speed={0.5} />
+        <Stars radius={50} depth={50} count={1800} factor={3} saturation={0} fade speed={0.4} />
 
         {/* 3D Orbit Controls */}
         <OrbitControls
           enablePan={false}
-          minDistance={6}
-          maxDistance={14}
-          maxPolarAngle={Math.PI / 2.3}
+          minDistance={5}
+          maxDistance={12}
+          maxPolarAngle={Math.PI / 2.4}
           dampingFactor={0.05}
         />
 
@@ -71,14 +72,14 @@ export function ChessBoard3D({
         <group position={[0, 0, 0]}>
           {/* Base Surround Platform */}
           <mesh position={[0, -0.25, 0]} receiveShadow>
-            <boxGeometry args={[9.5, 0.4, 9.5]} />
-            <meshStandardMaterial color="#0b0d1e" roughness={0.3} metalness={0.8} />
+            <boxGeometry args={[9.1, 0.4, 9.1]} />
+            <meshStandardMaterial color="#141933" roughness={0.3} metalness={0.8} />
           </mesh>
 
           {/* Border Trim Accent */}
           <mesh position={[0, -0.04, 0]}>
-            <boxGeometry args={[9.1, 0.05, 9.1]} />
-            <meshStandardMaterial color="#4a5580" roughness={0.2} metalness={0.9} />
+            <boxGeometry args={[8.7, 0.05, 8.7]} />
+            <meshStandardMaterial color="#4f5c90" roughness={0.2} metalness={0.9} />
           </mesh>
 
           {/* 8x8 Board Squares */}
@@ -92,7 +93,6 @@ export function ChessBoard3D({
               const isLegal = legalMoves.includes(squareName);
               const isLastMoveFrom = lastMove && lastMove.from === squareName;
               const isLastMoveTo = lastMove && lastMove.to === squareName;
-              const isLastMove = isLastMoveFrom || isLastMoveTo;
 
               const isHintFrom = hintSquares && hintSquares.from === squareName;
               const isHintTo = hintSquares && hintSquares.to === squareName;
@@ -103,8 +103,8 @@ export function ChessBoard3D({
               // Compute starting position if piece just moved to this square
               const fromPos = isLastMoveTo ? get3DPosFromSquare(lastMove.from) : null;
 
-              // Square background colors
-              let squareColor = isDark ? "#16182e" : "#2e3654";
+              // Distinct high-contrast square colors (Light: #222e50, Dark: #0c1024)
+              let squareColor = isDark ? "#0c1024" : "#222e50";
               let emissive = "#000000";
               let emissiveIntensity = 0;
 
@@ -117,15 +117,15 @@ export function ChessBoard3D({
                 emissive = "#00cc66";
                 emissiveIntensity = 0.6;
               } else if (isLastMoveFrom) {
-                squareColor = "#997700";
+                squareColor = "#886600";
                 emissive = "#ffaa00";
                 emissiveIntensity = 0.3;
               } else if (isLastMoveTo) {
-                squareColor = "#d4af37";
+                squareColor = "#c49f30";
                 emissive = "#ffd700";
                 emissiveIntensity = 0.4;
               } else if (isHovered) {
-                squareColor = "#3a4468";
+                squareColor = "#354370";
               }
 
               return (
@@ -144,20 +144,20 @@ export function ChessBoard3D({
                     }}
                     onPointerOut={() => setHoveredSquare(null)}
                   >
-                    <boxGeometry args={[1.06, 0.1, 1.06]} />
+                    <boxGeometry args={[1.02, 0.1, 1.02]} />
                     <meshStandardMaterial
                       color={squareColor}
                       emissive={emissive}
                       emissiveIntensity={emissiveIntensity}
-                      roughness={0.4}
-                      metalness={0.6}
+                      roughness={0.35}
+                      metalness={0.65}
                     />
                   </mesh>
 
                   {/* Selected Square Highlight Outline */}
                   {isSelected && (
                     <mesh position={[x, 0.06, z]} rotation={[-Math.PI / 2, 0, 0]}>
-                      <ringGeometry args={[0.46, 0.52, 4]} rotation={Math.PI / 4} />
+                      <ringGeometry args={[0.44, 0.5, 4]} rotation={Math.PI / 4} />
                       <meshBasicMaterial color="#7c5bf5" />
                     </mesh>
                   )}
@@ -165,7 +165,7 @@ export function ChessBoard3D({
                   {/* Legal Move Dot Marker */}
                   {isLegal && !piece && (
                     <mesh position={[x, 0.08, z]}>
-                      <cylinderGeometry args={[0.16, 0.16, 0.03, 24]} />
+                      <cylinderGeometry args={[0.15, 0.15, 0.03, 24]} />
                       <meshBasicMaterial color="#00d4ff" />
                     </mesh>
                   )}
@@ -173,19 +173,19 @@ export function ChessBoard3D({
                   {/* Legal Capture Target Ring */}
                   {isLegal && piece && (
                     <mesh position={[x, 0.08, z]} rotation={[-Math.PI / 2, 0, 0]}>
-                      <ringGeometry args={[0.42, 0.5, 32]} />
+                      <ringGeometry args={[0.4, 0.48, 32]} />
                       <meshBasicMaterial color="#ff6b9d" side={2} />
                     </mesh>
                   )}
 
                   {/* Chess Piece with animated movement */}
                   {piece && (
-                    <group scale={[0.85, 0.85, 0.85]}>
+                    <group scale={[0.82, 0.82, 0.82]}>
                       <ChessPiece3D
                         type={piece.type}
                         color={piece.color}
-                        position={[x / 0.85, 0.05 / 0.85, z / 0.85]}
-                        fromPosition={fromPos ? [fromPos[0] / 0.85, 0.05 / 0.85, fromPos[2] / 0.85] : null}
+                        position={[x / 0.82, 0.05 / 0.82, z / 0.82]}
+                        fromPosition={fromPos ? [fromPos[0] / 0.82, 0.05 / 0.82, fromPos[2] / 0.82] : null}
                         isSelected={isSelected}
                         isHinted={isHint}
                         onClick={() => onSquareClick(squareName)}
@@ -201,18 +201,18 @@ export function ChessBoard3D({
           {FILES.map((file, i) => (
             <React.Fragment key={`file-${file}`}>
               <Text
-                position={[(i - 3.5) * 1.1, 0.07, 4.45]}
+                position={[(i - 3.5) * 1.05, 0.07, 4.25]}
                 rotation={[-Math.PI / 2, 0, 0]}
-                fontSize={0.28}
-                color="#8892b0"
+                fontSize={0.26}
+                color="#94a3b8"
               >
                 {file}
               </Text>
               <Text
-                position={[(i - 3.5) * 1.1, 0.07, -4.45]}
+                position={[(i - 3.5) * 1.05, 0.07, -4.25]}
                 rotation={[-Math.PI / 2, 0, Math.PI]}
-                fontSize={0.28}
-                color="#8892b0"
+                fontSize={0.26}
+                color="#94a3b8"
               >
                 {file}
               </Text>
@@ -221,18 +221,18 @@ export function ChessBoard3D({
           {[8, 7, 6, 5, 4, 3, 2, 1].map((rank, i) => (
             <React.Fragment key={`rank-${rank}`}>
               <Text
-                position={[-4.45, 0.07, (i - 3.5) * 1.1]}
+                position={[-4.25, 0.07, (i - 3.5) * 1.05]}
                 rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
-                fontSize={0.28}
-                color="#8892b0"
+                fontSize={0.26}
+                color="#94a3b8"
               >
                 {rank.toString()}
               </Text>
               <Text
-                position={[4.45, 0.07, (i - 3.5) * 1.1]}
+                position={[4.25, 0.07, (i - 3.5) * 1.05]}
                 rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-                fontSize={0.28}
-                color="#8892b0"
+                fontSize={0.26}
+                color="#94a3b8"
               >
                 {rank.toString()}
               </Text>

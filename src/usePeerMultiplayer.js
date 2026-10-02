@@ -12,7 +12,19 @@ export function usePeerMultiplayer(onMoveReceived, onResetReceived) {
   const peerRef = useRef(null);
   const connRef = useRef(null);
 
-  // Initialize PeerJS client
+  // Store latest callbacks in refs to prevent Peer.destroy() on state changes
+  const onMoveRef = useRef(onMoveReceived);
+  const onResetRef = useRef(onResetReceived);
+
+  useEffect(() => {
+    onMoveRef.current = onMoveReceived;
+  }, [onMoveReceived]);
+
+  useEffect(() => {
+    onResetRef.current = onResetReceived;
+  }, [onResetReceived]);
+
+  // Initialize PeerJS client ONCE on mount
   useEffect(() => {
     const randomId = "stellar-" + Math.floor(1000 + Math.random() * 9000);
     const peer = new Peer(randomId, {
@@ -29,10 +41,10 @@ export function usePeerMultiplayer(onMoveReceived, onResetReceived) {
       setStatusMessage("Player 2 connected! Match ready.");
 
       conn.on("data", (data) => {
-        if (data.type === "MOVE") {
-          onMoveReceived(data.move);
-        } else if (data.type === "RESET") {
-          if (onResetReceived) onResetReceived();
+        if (data.type === "MOVE" && onMoveRef.current) {
+          onMoveRef.current(data.move);
+        } else if (data.type === "RESET" && onResetRef.current) {
+          onResetRef.current();
         }
       });
 
@@ -52,7 +64,7 @@ export function usePeerMultiplayer(onMoveReceived, onResetReceived) {
     return () => {
       peer.destroy();
     };
-  }, [onMoveReceived, onResetReceived]);
+  }, []); // Run ONLY once on mount
 
   // Host a new 2-player room
   const hostRoom = useCallback(() => {
@@ -66,38 +78,35 @@ export function usePeerMultiplayer(onMoveReceived, onResetReceived) {
   }, [peerId]);
 
   // Join an existing 2-player room with code
-  const joinRoom = useCallback(
-    (targetRoomCode) => {
-      if (!targetRoomCode || !peerRef.current) return;
-      setConnectionStatus("connecting");
-      setStatusMessage(`Connecting to room ${targetRoomCode}...`);
+  const joinRoom = useCallback((targetRoomCode) => {
+    if (!targetRoomCode || !peerRef.current) return;
+    setConnectionStatus("connecting");
+    setStatusMessage(`Connecting to room ${targetRoomCode}...`);
 
-      const conn = peerRef.current.connect(targetRoomCode.trim());
-      connRef.current = conn;
+    const conn = peerRef.current.connect(targetRoomCode.trim());
+    connRef.current = conn;
 
-      conn.on("open", () => {
-        setConnectionStatus("connected");
-        setIsHost(false);
-        setPlayerColor("b");
-        setRoomCode(targetRoomCode);
-        setStatusMessage("Connected to host! Match ready.");
-      });
+    conn.on("open", () => {
+      setConnectionStatus("connected");
+      setIsHost(false);
+      setPlayerColor("b");
+      setRoomCode(targetRoomCode);
+      setStatusMessage("Connected to host! Match ready.");
+    });
 
-      conn.on("data", (data) => {
-        if (data.type === "MOVE") {
-          onMoveReceived(data.move);
-        } else if (data.type === "RESET") {
-          if (onResetReceived) onResetReceived();
-        }
-      });
+    conn.on("data", (data) => {
+      if (data.type === "MOVE" && onMoveRef.current) {
+        onMoveRef.current(data.move);
+      } else if (data.type === "RESET" && onResetRef.current) {
+        onResetRef.current();
+      }
+    });
 
-      conn.on("close", () => {
-        setConnectionStatus("disconnected");
-        setStatusMessage("Disconnected from host.");
-      });
-    },
-    [onMoveReceived, onResetReceived]
-  );
+    conn.on("close", () => {
+      setConnectionStatus("disconnected");
+      setStatusMessage("Disconnected from host.");
+    });
+  }, []);
 
   // Send move to peer
   const sendMove = useCallback((move) => {

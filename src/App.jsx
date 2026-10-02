@@ -30,9 +30,9 @@ export default function App() {
   const [showHints, setShowHints] = useState(true);
   const [showTrainer, setShowTrainer] = useState(true);
 
-  // Mobile Slidable Drawers State
-  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
+  // Modals & Slidable Drawer State
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   // Online Multiplayer Room Input
   const [joinInputCode, setJoinInputCode] = useState("");
@@ -341,12 +341,6 @@ export default function App() {
     }
   };
 
-  // Close Drawers
-  const closeDrawers = () => {
-    setIsLeftDrawerOpen(false);
-    setIsRightDrawerOpen(false);
-  };
-
   // Game Over Status
   const getGameOverReason = () => {
     if (game.isCheckmate()) return `Checkmate! ${isWhiteTurn ? "Black" : "White"} wins!`;
@@ -369,128 +363,50 @@ export default function App() {
         </div>
 
         <div className="header-actions">
-          {/* Mobile Quick Drawer Toggle Buttons */}
+          {/* Mobile Drawer Toggle */}
           <button
-            className="btn btn-drawer-toggle mobile-only"
-            onClick={() => {
-              setIsLeftDrawerOpen((prev) => !prev);
-              setIsRightDrawerOpen(false);
-            }}
-          >
-            📊 Status & Eval
-          </button>
-
-          <button
-            className="btn btn-drawer-toggle mobile-only"
-            onClick={() => {
-              setIsRightDrawerOpen((prev) => !prev);
-              setIsLeftDrawerOpen(false);
-            }}
+            className="btn btn-secondary mobile-only"
+            onClick={() => setIsRightDrawerOpen((prev) => !prev)}
           >
             📜 Analysis & Log
           </button>
-
-          {/* Undo Button */}
-          <button
-            className="btn btn-secondary"
-            onClick={undoMove}
-            disabled={moveHistory.length === 0}
-            title="Undo last move"
-            style={{ opacity: moveHistory.length === 0 ? 0.5 : 1, cursor: moveHistory.length === 0 ? "not-allowed" : "pointer" }}
-          >
-            <span>↩ UNDO</span>
-          </button>
-
-          {/* Trainer Toggle */}
-          <button
-            className={`btn ${showTrainer ? "btn-hint" : "btn-secondary"}`}
-            onClick={() => setShowTrainer((prev) => !prev)}
-            title="Toggle Chess Coach & Trainer"
-          >
-            <span>{showTrainer ? "🎓 Trainer: ON" : "🎓 Trainer: OFF"}</span>
-          </button>
-
-          {/* AI Difficulty Level Selector */}
-          {gameMode === "ai" && (
-            <select
-              className="btn btn-secondary"
-              value={aiDepth}
-              onChange={(e) => setAiDepth(parseInt(e.target.value, 10))}
-              style={{ background: "#161936", color: "#ffd700", outline: "none", cursor: "pointer" }}
-              title="Adjust Stockfish AI Difficulty Level"
-            >
-              <option value={4}>⚡ Level 1 (Beginner)</option>
-              <option value={8}>⚔️ Level 2 (Casual)</option>
-              <option value={12}>🧠 Level 3 (Intermediate)</option>
-              <option value={16}>🏆 Level 4 (Master)</option>
-              <option value={20}>👑 Level 5 (Grandmaster)</option>
-            </select>
-          )}
-
-          {/* Hints Toggle Switch */}
-          <button
-            className={`btn ${showHints ? "btn-hint" : "btn-secondary"}`}
-            onClick={() => setShowHints((prev) => !prev)}
-          >
-            <span>{showHints ? "💡 Hints: ON" : "🚫 Hints: OFF"}</span>
-          </button>
-
-          {/* Mode Switcher */}
-          <select
-            className="btn btn-secondary"
-            value={gameMode}
-            onChange={(e) => {
-              const mode = e.target.value;
-              setGameMode(mode);
-              if (mode !== "online") leaveRoom();
-            }}
-            style={{ background: "#161936", color: "#38bdf8", outline: "none", cursor: "pointer" }}
-          >
-            <option value="ai">🤖 vs Engine AI</option>
-            <option value="local">🎮 2 Player Local</option>
-            <option value="online">🌐 2 Player Online WebRTC</option>
-          </select>
 
           {/* New Game */}
           <button className="btn btn-primary" onClick={resetGame}>
             + NEW GAME
           </button>
+
+          {/* Settings Modal Toggle */}
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowSettingsModal((prev) => !prev)}
+            title="Room & Match Settings"
+          >
+            ⚙ Settings
+          </button>
         </div>
       </header>
 
-      {/* Backdrop overlay for mobile drawers */}
-      {(isLeftDrawerOpen || isRightDrawerOpen) && (
-        <div className="drawer-backdrop" onClick={closeDrawers} />
+      {/* Backdrop overlay for mobile drawer */}
+      {isRightDrawerOpen && (
+        <div className="drawer-backdrop" onClick={() => setIsRightDrawerOpen(false)} />
       )}
 
-      {/* Main 3-Column Workspace */}
-      <div className="main-stage">
-        {/* Left Panel (Slidable Drawer on Mobile) */}
-        <aside className={`panel-left ${isLeftDrawerOpen ? "open" : ""}`}>
-          {/* Game State Header */}
-          <div className="glass-card">
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="card-title">
-              <span>Match Status</span>
-              <button className="drawer-close-btn" onClick={() => setIsLeftDrawerOpen(false)}>✕</button>
+              <span>⚙ Match & Room Settings</span>
+              <button className="drawer-close-btn" style={{ display: "block" }} onClick={() => setShowSettingsModal(false)}>✕</button>
             </div>
-            <div className={`turn-badge ${isWhiteTurn ? "turn-white" : "turn-black"}`}>
-              <span>{isWhiteTurn ? "♔ WHITE TO MOVE" : "♚ BLACK TO MOVE"}</span>
-              <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Move {Math.floor(moveHistory.length / 2) + 1}</span>
-            </div>
-            <div style={{ marginTop: "6px", fontSize: "0.78rem", color: "#64748b" }}>
-              ● {isGameOver ? "Match Finished" : "Game Active"}
-            </div>
-          </div>
 
-          {/* Online WebRTC Room Controls (if mode active) */}
-          {gameMode === "online" && (
-            <div className="glass-card" style={{ borderColor: "rgba(124, 91, 245, 0.3)" }}>
-              <div className="card-title" style={{ color: "#7c5bf5" }}>
-                <span>Online WebRTC Room</span>
-              </div>
+            {/* Online Room Connection */}
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontSize: "0.8rem", color: "#38bdf8", marginBottom: "6px" }}>🌐 Online WebRTC Room</div>
               {connectionStatus === "disconnected" ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <button className="btn btn-primary" onClick={hostRoom} style={{ justifyContent: "center" }}>
+                  <button className="btn btn-primary" onClick={() => { hostRoom(); setGameMode("online"); }} style={{ justifyContent: "center" }}>
                     Create Room (Host White)
                   </button>
                   <div style={{ display: "flex", gap: "6px" }}>
@@ -509,7 +425,7 @@ export default function App() {
                         fontSize: "0.78rem",
                       }}
                     />
-                    <button className="btn btn-secondary" onClick={() => joinRoom(joinInputCode)}>
+                    <button className="btn btn-secondary" onClick={() => { joinRoom(joinInputCode); setGameMode("online"); }}>
                       Join
                     </button>
                   </div>
@@ -523,12 +439,57 @@ export default function App() {
                     {statusMessage}
                   </div>
                   <button className="btn btn-secondary" onClick={leaveRoom} style={{ width: "100%", justifyContent: "center" }}>
-                    Disconnect
+                    Disconnect Room
                   </button>
                 </div>
               )}
             </div>
+
+            <button className="btn btn-primary" onClick={() => setShowSettingsModal(false)} style={{ width: "100%", justifyContent: "center" }}>
+              Close Settings
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Board Stage Layout (Dominant Centered Board) */}
+      <div className="main-stage">
+        {/* Center 3D Board Canvas (Zero vertical gap) */}
+        <main className="canvas-area">
+          <ChessBoard3D
+            game={game}
+            selectedSquare={selectedSquare}
+            legalMoves={legalMoves}
+            lastMove={lastMove}
+            hintSquares={showHints ? hintSquares : null}
+            onSquareClick={handleSquareClick}
+          />
+
+          {/* Game Over Modal */}
+          {isGameOver && (
+            <div className="game-over-overlay">
+              <div className="game-over-title">CHECKMATE</div>
+              <div className="game-over-reason">{getGameOverReason()}</div>
+              <button className="btn btn-primary" onClick={resetGame}>
+                PLAY AGAIN
+              </button>
+            </div>
           )}
+        </main>
+
+        {/* Right Analysis Side Panel */}
+        <aside className={`panel-right ${isRightDrawerOpen ? "open" : ""}`}>
+          {/* Match Status Card */}
+          <div className="glass-card">
+            <div className="card-title">
+              <span>Match Status</span>
+              <button className="drawer-close-btn" onClick={() => setIsRightDrawerOpen(false)}>✕</button>
+            </div>
+            <div className={`turn-badge ${isWhiteTurn ? "turn-white" : "turn-black"}`}>
+              <span>{isWhiteTurn ? "♔ WHITE TO MOVE" : "♚ BLACK TO MOVE"}</span>
+              <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Move {Math.floor(moveHistory.length / 2) + 1}</span>
+            </div>
+          </div>
 
           {/* Engine Status & Live Evaluation */}
           <div className="glass-card">
@@ -537,7 +498,7 @@ export default function App() {
               <span style={{ fontSize: "0.72rem", color: "#38bdf8" }}>Stockfish 19</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", fontSize: "0.78rem", color: "#cbd5e1", marginBottom: "10px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px", fontSize: "0.78rem", color: "#cbd5e1", marginBottom: "8px" }}>
               <div>Depth: <strong>{depth} / {aiDepth}</strong></div>
               <div>Nodes: <strong>{nodesDisplay}</strong></div>
               <div>Time: <strong>{timeDisplay}</strong></div>
@@ -577,83 +538,51 @@ export default function App() {
               <span className="captured-pieces-list">{capturedData.capturedByBlack.length > 0 ? capturedData.capturedByBlack.join(" ") : "—"}</span>
             </div>
           </div>
-        </aside>
 
-        {/* Center 3D Board */}
-        <main className="canvas-area">
-          <ChessBoard3D
-            game={game}
-            selectedSquare={selectedSquare}
-            legalMoves={legalMoves}
-            lastMove={lastMove}
-            hintSquares={showHints ? hintSquares : null}
-            onSquareClick={handleSquareClick}
-          />
-
-          {/* Game Over Modal */}
-          {isGameOver && (
-            <div className="game-over-overlay">
-              <div className="game-over-title">CHECKMATE</div>
-              <div className="game-over-reason">{getGameOverReason()}</div>
-              <button className="btn btn-primary" onClick={resetGame}>
-                PLAY AGAIN
-              </button>
-            </div>
-          )}
-        </main>
-
-        {/* Right Panel (Slidable Drawer on Mobile) */}
-        <aside className={`panel-right ${isRightDrawerOpen ? "open" : ""}`}>
-          {/* 1. Chess Trainer / Coach Card (if enabled) */}
+          {/* Chess Trainer Coach Card */}
           {showTrainer && trainerFeedback && (
             <div className="glass-card" style={{ borderColor: trainerFeedback.color, background: `${trainerFeedback.color}0a` }}>
               <div className="card-title" style={{ color: trainerFeedback.color }}>
                 <span>🎓 CHESS COACH</span>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ fontSize: "0.75rem", fontWeight: "700" }}>{trainerFeedback.title}</span>
-                  <button className="drawer-close-btn" onClick={() => setIsRightDrawerOpen(false)}>✕</button>
-                </div>
+                <span style={{ fontSize: "0.75rem", fontWeight: "700" }}>{trainerFeedback.title}</span>
               </div>
-              <div style={{ fontSize: "0.82rem", color: "#e2e8f0", lineHeight: "1.4" }}>
+              <div style={{ fontSize: "0.82rem", color: "#e2e8f0", lineHeight: "1.35" }}>
                 {trainerFeedback.advice}
               </div>
             </div>
           )}
 
-          {/* 2. Engine Recommendation Card */}
+          {/* Engine Recommendation Card */}
           {showHints && (
             <div className="glass-card" style={{ borderColor: "rgba(0, 255, 136, 0.25)" }}>
               <div className="card-title" style={{ color: "#00ff88" }}>
                 <span>✦ ENGINE RECOMMENDATION</span>
-                {(!showTrainer || !trainerFeedback) && (
-                  <button className="drawer-close-btn" onClick={() => setIsRightDrawerOpen(false)}>✕</button>
-                )}
               </div>
 
               {bestMoveExplained ? (
                 <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span style={{ fontSize: "1.2rem", fontWeight: "700", fontFamily: "JetBrains Mono", color: "#00ff88" }}>
+                      <span style={{ fontSize: "1.15rem", fontWeight: "700", fontFamily: "JetBrains Mono", color: "#00ff88" }}>
                         {bestMoveExplained.san}
                       </span>
-                      <span style={{ fontSize: "0.82rem", color: "#38bdf8", fontWeight: "600" }}>
+                      <span style={{ fontSize: "0.8rem", color: "#38bdf8", fontWeight: "600" }}>
                         {evalDisplay}
                       </span>
                     </div>
 
                     {canPlayerMove && (
-                      <button className="btn btn-hint" style={{ padding: "4px 10px", fontSize: "0.72rem" }} onClick={playBestMove}>
+                      <button className="btn btn-hint" style={{ padding: "3px 8px", fontSize: "0.72rem" }} onClick={playBestMove}>
                         PLAY MOVE
                       </button>
                     )}
                   </div>
 
-                  <div style={{ padding: "6px 8px", background: "rgba(0,0,0,0.3)", borderRadius: "4px", borderLeft: "2px solid #00ff88", marginBottom: "8px", fontFamily: "JetBrains Mono", fontSize: "0.78rem", color: "#cbd5e1" }}>
+                  <div style={{ padding: "4px 8px", background: "rgba(0,0,0,0.3)", borderRadius: "4px", borderLeft: "2px solid #00ff88", marginBottom: "6px", fontFamily: "JetBrains Mono", fontSize: "0.76rem", color: "#cbd5e1" }}>
                     {pvDisplay || `${bestMoveExplained.from} → ${bestMoveExplained.to}`}
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#64748b" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "#64748b" }}>
                     <span>Depth {depth}</span>
                     <span>{nodesDisplay} nodes</span>
                     <span>Stockfish 19</span>
@@ -667,7 +596,7 @@ export default function App() {
             </div>
           )}
 
-          {/* 3. Current Move Deep Analysis Card */}
+          {/* Current Move Deep Analysis Card */}
           <div className="glass-card" style={{ borderColor: "rgba(56, 189, 248, 0.25)" }}>
             <div className="card-title" style={{ color: "#38bdf8" }}>
               <span>🎯 MOVE ANALYSIS</span>
@@ -675,38 +604,34 @@ export default function App() {
 
             {currentMove ? (
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "1.2rem", fontWeight: "700", fontFamily: "JetBrains Mono", color: "#ffffff" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <span style={{ fontSize: "1.15rem", fontWeight: "700", fontFamily: "JetBrains Mono", color: "#ffffff" }}>
                     {currentMove.san}
                   </span>
                   {bestMove && (
-                    <span style={{ fontSize: "0.78rem", color: "#94a3b8" }}>
+                    <span style={{ fontSize: "0.76rem", color: "#94a3b8" }}>
                       Best response: <strong style={{ color: "#38bdf8" }}>...{bestMove.slice(2, 4)}</strong>
                     </span>
                   )}
                 </div>
 
-                <div style={{ fontSize: "0.75rem", fontWeight: "700", color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
+                <div style={{ fontSize: "0.72rem", fontWeight: "700", color: "#38bdf8", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
                   Why?
                 </div>
                 {currentMove.deepAnalysis?.strengths.map((s, idx) => (
-                  <div key={idx} style={{ fontSize: "0.78rem", color: "#e2e8f0", marginBottom: "3px", paddingLeft: "8px", borderLeft: "2px solid #38bdf8" }}>
+                  <div key={idx} style={{ fontSize: "0.76rem", color: "#e2e8f0", marginBottom: "2px", paddingLeft: "6px", borderLeft: "2px solid #38bdf8" }}>
                     • {s}
                   </div>
                 ))}
-
-                <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "8px" }}>
-                  Evaluation: <strong style={{ color: "#38bdf8" }}>{evalDisplay}</strong>
-                </div>
               </div>
             ) : (
               <div style={{ fontSize: "0.78rem", color: "#64748b" }}>
-                Make your opening move to inspect tactical analysis.
+                Make your move to inspect analysis.
               </div>
             )}
           </div>
 
-          {/* 4. Two-Column Move History Table */}
+          {/* Two-Column Move History Table */}
           <div className="glass-card" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
             <div className="card-title">
               <span>MOVE HISTORY</span>
@@ -725,7 +650,7 @@ export default function App() {
                 <tbody>
                   {movePairs.length === 0 ? (
                     <tr>
-                      <td colSpan="3" style={{ textAlign: "center", color: "#64748b", padding: "16px" }}>
+                      <td colSpan="3" style={{ textAlign: "center", color: "#64748b", padding: "12px" }}>
                         No moves played yet.
                       </td>
                     </tr>
@@ -754,6 +679,78 @@ export default function App() {
           </div>
         </aside>
       </div>
+
+      {/* Bottom Compact Action Control Bar */}
+      <footer className="bottom-control-bar">
+        {/* Undo Button */}
+        <button
+          className="btn btn-secondary"
+          onClick={undoMove}
+          disabled={moveHistory.length === 0}
+          title="Undo last move"
+          style={{ opacity: moveHistory.length === 0 ? 0.5 : 1, cursor: moveHistory.length === 0 ? "not-allowed" : "pointer" }}
+        >
+          <span>↶ Undo</span>
+        </button>
+
+        {/* Hint Button */}
+        <button
+          className="btn btn-hint"
+          onClick={requestHint}
+          disabled={!bestMove || isGameOver}
+          title="Highlight engine best move"
+        >
+          <span>💡 Hint</span>
+        </button>
+
+        {/* Trainer Toggle */}
+        <button
+          className={`btn ${showTrainer ? "btn-hint" : "btn-secondary"}`}
+          onClick={() => setShowTrainer((prev) => !prev)}
+        >
+          <span>{showTrainer ? "🎓 Trainer ON" : "🎓 Trainer OFF"}</span>
+        </button>
+
+        {/* AI Level Dropdown */}
+        {gameMode === "ai" && (
+          <select
+            className="btn btn-secondary"
+            value={aiDepth}
+            onChange={(e) => setAiDepth(parseInt(e.target.value, 10))}
+            style={{ background: "#161936", color: "#ffd700", outline: "none", cursor: "pointer" }}
+          >
+            <option value={4}>🧠 Level 1 (Beginner)</option>
+            <option value={8}>🧠 Level 2 (Casual)</option>
+            <option value={12}>🧠 Level 3 (Intermediate)</option>
+            <option value={16}>🧠 Level 4 (Master)</option>
+            <option value={20}>🧠 Level 5 (Grandmaster)</option>
+          </select>
+        )}
+
+        {/* Hints Toggle */}
+        <button
+          className={`btn ${showHints ? "btn-hint" : "btn-secondary"}`}
+          onClick={() => setShowHints((prev) => !prev)}
+        >
+          <span>{showHints ? "💡 Hints ON" : "🚫 Hints OFF"}</span>
+        </button>
+
+        {/* Mode Switcher */}
+        <select
+          className="btn btn-secondary"
+          value={gameMode}
+          onChange={(e) => {
+            const mode = e.target.value;
+            setGameMode(mode);
+            if (mode !== "online") leaveRoom();
+          }}
+          style={{ background: "#161936", color: "#38bdf8", outline: "none", cursor: "pointer" }}
+        >
+          <option value="ai">🤖 vs Engine AI</option>
+          <option value="local">🎮 2 Player Local</option>
+          <option value="online">🌐 2 Player Online</option>
+        </select>
+      </footer>
     </div>
   );
 }

@@ -1,11 +1,11 @@
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Sparkles } from "@react-three/drei";
 
 /**
  * Ultra-Sharp Procedural Turned Chess Pieces
- * Rendered with 64-segment lathe geometry and smooth 3D vector lerp arc animations.
+ * Enhanced contrast: Cyan Pearl for White, Vibrant Magenta for Black with crisp base rim highlights.
  */
 function createSharpPieceGeometries() {
   const pawnPoints = [
@@ -94,8 +94,7 @@ function createSharpPieceGeometries() {
 export function ChessPiece3D({ type, color, position, fromPosition, isSelected, isHinted, onClick }) {
   const groupRef = useRef();
   const innerMeshRef = useRef();
-  
-  // Initialize current animated position from origin if piece just moved
+
   const currentPos = useRef(
     fromPosition
       ? new THREE.Vector3(fromPosition[0], fromPosition[1], fromPosition[2])
@@ -105,27 +104,26 @@ export function ChessPiece3D({ type, color, position, fromPosition, isSelected, 
   const geometries = useMemo(() => createSharpPieceGeometries(), []);
   const isWhite = color === "w";
 
-  // Crisp metallic materials
-  const mainColor = isWhite ? "#f0f8ff" : "#12121e";
+  // High Contrast Palette
+  const mainColor = isWhite ? "#00c8ff" : "#d91b6c";
   const emissiveColor = isWhite
     ? isSelected
       ? "#ffd700"
       : isHinted
       ? "#00ff88"
-      : "#0088cc"
+      : "#0066aa"
     : isSelected
     ? "#ffd700"
     : isHinted
     ? "#00ff88"
-    : "#cc0088";
+    : "#880044";
 
-  // Smooth position lerp & parabolic arc jump animation on move execution
+  // Smooth position lerp & parabolic arc jump animation
   useFrame((state) => {
     const target = new THREE.Vector3(position[0], position[1], position[2]);
     const dist = currentPos.current.distanceTo(target);
 
     if (dist > 0.01) {
-      // Interpolate towards target square
       currentPos.current.lerp(target, 0.22);
       const arcHeight = Math.sin(Math.min(1, dist / 2.2) * Math.PI) * 0.48;
 
@@ -169,9 +167,9 @@ export function ChessPiece3D({ type, color, position, fromPosition, isSelected, 
             <meshStandardMaterial
               color={mainColor}
               emissive={emissiveColor}
-              emissiveIntensity={isSelected || isHinted ? 0.95 : 0.2}
-              roughness={0.08}
-              metalness={0.92}
+              emissiveIntensity={isSelected || isHinted ? 0.95 : 0.35}
+              roughness={0.12}
+              metalness={0.88}
             />
           </mesh>
         ) : (
@@ -180,9 +178,9 @@ export function ChessPiece3D({ type, color, position, fromPosition, isSelected, 
               <meshStandardMaterial
                 color={mainColor}
                 emissive={emissiveColor}
-                emissiveIntensity={isSelected || isHinted ? 0.95 : 0.2}
-                roughness={0.08}
-                metalness={0.92}
+                emissiveIntensity={isSelected || isHinted ? 0.95 : 0.35}
+                roughness={0.12}
+                metalness={0.88}
               />
             </mesh>
             <mesh position={[0, 0.45, 0.05]} rotation={[0.2, 0, 0]} castShadow>
@@ -190,17 +188,23 @@ export function ChessPiece3D({ type, color, position, fromPosition, isSelected, 
               <meshStandardMaterial
                 color={mainColor}
                 emissive={emissiveColor}
-                emissiveIntensity={isSelected || isHinted ? 0.95 : 0.2}
-                roughness={0.08}
-                metalness={0.92}
+                emissiveIntensity={isSelected || isHinted ? 0.95 : 0.35}
+                roughness={0.12}
+                metalness={0.88}
               />
             </mesh>
             <mesh position={[0, 0.62, -0.08]} rotation={[-0.3, 0, 0]}>
               <coneGeometry args={[0.12, 0.25, 6]} />
-              <meshStandardMaterial color={mainColor} roughness={0.08} metalness={0.92} />
+              <meshStandardMaterial color={mainColor} roughness={0.12} metalness={0.88} />
             </mesh>
           </group>
         )}
+
+        {/* Base Rim Highlight */}
+        <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.3, 0.36, 32]} />
+          <meshBasicMaterial color={isWhite ? "#00ffff" : "#ff3399"} side={THREE.DoubleSide} />
+        </mesh>
 
         {/* Pawn Head Orb */}
         {type === "p" && (
@@ -209,9 +213,9 @@ export function ChessPiece3D({ type, color, position, fromPosition, isSelected, 
             <meshStandardMaterial
               color={mainColor}
               emissive={emissiveColor}
-              emissiveIntensity={0.3}
-              roughness={0.08}
-              metalness={0.92}
+              emissiveIntensity={0.4}
+              roughness={0.1}
+              metalness={0.9}
             />
           </mesh>
         )}
