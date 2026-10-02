@@ -30,6 +30,10 @@ export default function App() {
   const [showHints, setShowHints] = useState(true);
   const [showTrainer, setShowTrainer] = useState(true);
 
+  // Mobile Slidable Drawers State
+  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
+  const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
+
   // Online Multiplayer Room Input
   const [joinInputCode, setJoinInputCode] = useState("");
 
@@ -337,6 +341,12 @@ export default function App() {
     }
   };
 
+  // Close Drawers
+  const closeDrawers = () => {
+    setIsLeftDrawerOpen(false);
+    setIsRightDrawerOpen(false);
+  };
+
   // Game Over Status
   const getGameOverReason = () => {
     if (game.isCheckmate()) return `Checkmate! ${isWhiteTurn ? "Black" : "White"} wins!`;
@@ -359,6 +369,27 @@ export default function App() {
         </div>
 
         <div className="header-actions">
+          {/* Mobile Quick Drawer Toggle Buttons */}
+          <button
+            className="btn btn-drawer-toggle mobile-only"
+            onClick={() => {
+              setIsLeftDrawerOpen((prev) => !prev);
+              setIsRightDrawerOpen(false);
+            }}
+          >
+            📊 Status & Eval
+          </button>
+
+          <button
+            className="btn btn-drawer-toggle mobile-only"
+            onClick={() => {
+              setIsRightDrawerOpen((prev) => !prev);
+              setIsLeftDrawerOpen(false);
+            }}
+          >
+            📜 Analysis & Log
+          </button>
+
           {/* Undo Button */}
           <button
             className="btn btn-secondary"
@@ -427,13 +458,21 @@ export default function App() {
         </div>
       </header>
 
+      {/* Backdrop overlay for mobile drawers */}
+      {(isLeftDrawerOpen || isRightDrawerOpen) && (
+        <div className="drawer-backdrop" onClick={closeDrawers} />
+      )}
+
       {/* Main 3-Column Workspace */}
       <div className="main-stage">
-        {/* Left Panel */}
-        <aside className="panel-left">
+        {/* Left Panel (Slidable Drawer on Mobile) */}
+        <aside className={`panel-left ${isLeftDrawerOpen ? "open" : ""}`}>
           {/* Game State Header */}
           <div className="glass-card">
-            <div className="card-title">Match Status</div>
+            <div className="card-title">
+              <span>Match Status</span>
+              <button className="drawer-close-btn" onClick={() => setIsLeftDrawerOpen(false)}>✕</button>
+            </div>
             <div className={`turn-badge ${isWhiteTurn ? "turn-white" : "turn-black"}`}>
               <span>{isWhiteTurn ? "♔ WHITE TO MOVE" : "♚ BLACK TO MOVE"}</span>
               <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Move {Math.floor(moveHistory.length / 2) + 1}</span>
@@ -563,14 +602,17 @@ export default function App() {
           )}
         </main>
 
-        {/* Right Panel */}
-        <aside className="panel-right">
+        {/* Right Panel (Slidable Drawer on Mobile) */}
+        <aside className={`panel-right ${isRightDrawerOpen ? "open" : ""}`}>
           {/* 1. Chess Trainer / Coach Card (if enabled) */}
           {showTrainer && trainerFeedback && (
             <div className="glass-card" style={{ borderColor: trainerFeedback.color, background: `${trainerFeedback.color}0a` }}>
               <div className="card-title" style={{ color: trainerFeedback.color }}>
                 <span>🎓 CHESS COACH</span>
-                <span style={{ fontSize: "0.75rem", fontWeight: "700" }}>{trainerFeedback.title}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: "700" }}>{trainerFeedback.title}</span>
+                  <button className="drawer-close-btn" onClick={() => setIsRightDrawerOpen(false)}>✕</button>
+                </div>
               </div>
               <div style={{ fontSize: "0.82rem", color: "#e2e8f0", lineHeight: "1.4" }}>
                 {trainerFeedback.advice}
@@ -583,6 +625,9 @@ export default function App() {
             <div className="glass-card" style={{ borderColor: "rgba(0, 255, 136, 0.25)" }}>
               <div className="card-title" style={{ color: "#00ff88" }}>
                 <span>✦ ENGINE RECOMMENDATION</span>
+                {(!showTrainer || !trainerFeedback) && (
+                  <button className="drawer-close-btn" onClick={() => setIsRightDrawerOpen(false)}>✕</button>
+                )}
               </div>
 
               {bestMoveExplained ? (

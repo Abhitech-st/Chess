@@ -44,7 +44,7 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn {
@@ -91,6 +91,12 @@
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
+}
+
+.btn-drawer-toggle {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
 }
 
 /* Main Workspace Grid: Left (260px), Center (1fr), Right (360px) */
@@ -150,6 +156,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.drawer-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 /* Turn Status Badge */
@@ -279,4 +294,101 @@
   color: #cbd5e1;
   font-size: 0.95rem;
   margin-bottom: 20px;
+}
+
+/* ============== MOBILE RESPONSIVE SLIDABLE DRAWER LAYOUT ============== */
+.mobile-only {
+  display: none;
+}
+
+.drawer-backdrop {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .mobile-only {
+    display: inline-flex;
+  }
+
+  .drawer-close-btn {
+    display: block;
+  }
+
+  .app-header {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .brand-title {
+    font-size: 0.92rem;
+    letter-spacing: 1px;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+
+  .main-stage {
+    display: block;
+    position: relative;
+    height: calc(100vh - 88px);
+  }
+
+  /* Slidable Left Drawer Panel */
+  .panel-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 290px;
+    max-width: 85vw;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 8px 0 25px rgba(0, 0, 0, 0.8);
+  }
+
+  .panel-left.open {
+    transform: translateX(0);
+  }
+
+  /* Slidable Right Drawer Panel */
+  .panel-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 310px;
+    max-width: 85vw;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.8);
+  }
+
+  .panel-right.open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop Overlay */
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+  }
+
+  .canvas-area {
+    width: 100%;
+    height: 100%;
+  }
 }
