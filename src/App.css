@@ -1,0 +1,282 @@
+/* ============== APP STYLING ============== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #070814;
+  color: #e2e8f0;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Header Navbar */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: #0d0f22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  font-size: 1.3rem;
+  color: #00d4ff;
+}
+
+.brand-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+}
+
+/* Header Action Buttons */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: #5b40d9;
+  color: #fff;
+  border-color: #7c5bf5;
+}
+
+.btn-primary:hover {
+  background: #6c4ff0;
+}
+
+.btn-hint {
+  background: rgba(0, 255, 136, 0.1);
+  border-color: rgba(0, 255, 136, 0.3);
+  color: #00ff88;
+}
+
+.btn-hint:hover {
+  background: rgba(0, 255, 136, 0.2);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* Main Workspace Grid: Left (260px), Center (1fr), Right (360px) */
+.main-stage {
+  display: grid;
+  grid-template-columns: 260px 1fr 360px;
+  height: calc(100vh - 53px);
+  width: 100%;
+}
+
+/* Left Panel */
+.panel-left {
+  background: #0a0c1a;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+/* Right Panel */
+.panel-right {
+  background: #0a0c1a;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+/* 3D Canvas Focal Stage */
+.canvas-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 40%, #12142e 0%, #060712 100%);
+  overflow: hidden;
+}
+
+/* Cards & Sections */
+.glass-card {
+  background: #111428;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Turn Status Badge */
+.turn-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.turn-white {
+  background: rgba(0, 212, 255, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.turn-black {
+  background: rgba(255, 42, 141, 0.1);
+  color: #f43f5e;
+  border: 1px solid rgba(255, 42, 141, 0.2);
+}
+
+/* Clean Linear Evaluation Bar */
+.eval-track {
+  height: 10px;
+  background: #334155;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.eval-fill-white {
+  height: 100%;
+  background: #38bdf8;
+  transition: width 0.3s ease;
+}
+
+/* Captured Pieces Panel */
+.captured-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.captured-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+
+.captured-pieces-list {
+  font-size: 1.05rem;
+  letter-spacing: 2px;
+  color: #cbd5e1;
+}
+
+/* 2-Column Move Notation History Table */
+.move-table-container {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: #0d0f22;
+}
+
+.move-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.move-table th {
+  position: sticky;
+  top: 0;
+  background: #161936;
+  color: #94a3b8;
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.move-table td {
+  padding: 5px 10px;
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.move-table tr.last-move-row {
+  background: rgba(124, 91, 245, 0.15);
+}
+
+.move-table td.active-move {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+/* Game Over Overlay */
+.game-over-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 12, 30, 0.95);
+  border: 1px solid rgba(124, 91, 245, 0.3);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  padding: 30px 40px;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 100;
+}
+
+.game-over-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  color: #f59e0b;
+  margin-bottom: 6px;
+}
+
+.game-over-reason {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}

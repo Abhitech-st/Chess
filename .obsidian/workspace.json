@@ -1,0 +1,234 @@
+{
+  "main": {
+    "id": "c83c347d2379a5ad",
+    "type": "split",
+    "children": [
+      {
+        "id": "6ca80f2e31997f6e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bfe7e2c43d25ad70",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "public/icons.svg"
+              },
+              "icon": "lucide-image",
+              "title": "icons"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a61f2c5abe132340",
+    "type": "split",
+    "children": [
+      {
+        "id": "75aa11942b03fbaf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9afa4c31b006f88e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "7db55c68da637a29",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "66b4eb1205a489fb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b3a761e64d77e159",
+    "type": "split",
+    "children": [
+      {
+        "id": "f1e339840e9a4e9d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "abca87a30f59e621",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "public/icons.svg",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "2c2aab01848e1a57",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "public/icons.svg",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "8365330ed1557c19",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a1cfd60a8968a469",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "259f0e99e8a70f96",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "public/icons.svg",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "9afa4c31b006f88e",
+  "lastOpenFiles": [
+    "dist/assets/index-pfXVlnog.js",
+    "node_modules/stats-gl/node_modules/three/examples/fonts/ttf/README.md",
+    "node_modules/stats-gl/node_modules/three/examples/fonts/ttf/kenpixel.ttf",
+    "node_modules/stats-gl/node_modules/three/examples/fonts/ttf",
+    "node_modules/stats-gl/node_modules/three/examples/fonts/README.md",
+    "node_modules/tunnel-rat/node_modules/zustand/react/shallow.js",
+    "node_modules/tunnel-rat/node_modules/zustand/react/shallow.d.ts",
+    "node_modules/tunnel-rat/node_modules/zustand/react",
+    "node_modules/tunnel-rat/node_modules/zustand/middleware/subscribeWithSelector.d.ts",
+    "node_modules/tunnel-rat/node_modules/zustand/middleware/redux.d.ts",
+    "node_modules/tunnel-rat/node_modules/zustand/middleware/immer.js",
+    "node_modules/tunnel-rat/node_modules/zustand/middleware/persist.d.ts",
+    "node_modules/tunnel-rat/node_modules/zustand/middleware/immer.d.ts",
+    "node_modules/tunnel-rat/node_modules/zustand/readme.md",
+    "node_modules/stats-gl/node_modules/three/README.md",
+    "node_modules/tunnel-rat/CHANGELOG.md",
+    "node_modules/tunnel-rat/README.md",
+    "node_modules/is-promise/readme.md",
+    "node_modules/hls.js/README.md",
+    "node_modules/glsl-noise/README.md",
+    "node_modules/detect-gpu/README.md",
+    "node_modules/cross-env/CHANGELOG.md",
+    "node_modules/camera-controls/readme.md",
+    "node_modules/cross-env/README.md",
+    "node_modules/react-use-measure/README.md",
+    "node_modules/promise-worker-transferable/README.md",
+    "node_modules/meshline/README.md",
+    "node_modules/its-fine/README.md",
+    "node_modules/@use-gesture/react/README.md",
+    "node_modules/@use-gesture/react/CHANGELOG.md",
+    "node_modules/@use-gesture/core/CHANGELOG.md",
+    "node_modules/@types/webxr/README.md",
+    "node_modules/@types/stats.js/README.md",
+    "node_modules/@types/react-reconciler/README.md",
+    "node_modules/@types/offscreencanvas/README.md",
+    "node_modules/@types/draco3d/README.md",
+    "dist/icons.svg",
+    "dist/favicon.svg",
+    "public/favicon.svg",
+    "src/assets/hero.png",
+    "src/assets/vite.svg",
+    "src/assets/react.svg"
+  ]
+}
