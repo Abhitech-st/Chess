@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Stars } from "@react-three/drei";
 import { ChessPiece3D } from "./ChessPiece3D";
@@ -14,6 +14,17 @@ export function ChessBoard3D({
   onSquareClick,
 }) {
   const [hoveredSquare, setHoveredSquare] = useState(null);
+
+  // Responsive mobile screen detection
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const board = game.board();
 
@@ -36,10 +47,16 @@ export function ChessBoard3D({
     return get3DPos(row, col);
   };
 
+  // Responsive scale factor: 0.72 on mobile screens for 100% visibility, 1.0 on desktop
+  const boardScale = isMobile ? 0.72 : 1.0;
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <Canvas
-        camera={{ position: [0, 8.2, 3.6], fov: 38 }}
+        camera={{
+          position: isMobile ? [0, 9.8, 4.4] : [0, 8.2, 3.6],
+          fov: isMobile ? 46 : 38,
+        }}
         shadows
         gl={{ antialias: true }}
       >
@@ -62,14 +79,14 @@ export function ChessBoard3D({
         {/* 3D Orbit Controls */}
         <OrbitControls
           enablePan={false}
-          minDistance={5}
-          maxDistance={12}
+          minDistance={4}
+          maxDistance={14}
           maxPolarAngle={Math.PI / 2.4}
           dampingFactor={0.05}
         />
 
-        {/* Board Container */}
-        <group position={[0, 0, 0]}>
+        {/* Board Container with responsive mobile scaling */}
+        <group position={[0, 0, 0]} scale={[boardScale, boardScale, boardScale]}>
           {/* Base Surround Platform */}
           <mesh position={[0, -0.25, 0]} receiveShadow>
             <boxGeometry args={[9.1, 0.4, 9.1]} />
